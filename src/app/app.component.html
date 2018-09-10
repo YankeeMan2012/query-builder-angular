@@ -1,20 +1,112 @@
-<!--The content below is only a placeholder and can be replaced.-->
-<div style="text-align:center">
-  <h1>
-    Welcome to {{ title }}!
-  </h1>
-  <img width="300" alt="Angular Logo" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTAgMjUwIj4KICAgIDxwYXRoIGZpbGw9IiNERDAwMzEiIGQ9Ik0xMjUgMzBMMzEuOSA2My4ybDE0LjIgMTIzLjFMMTI1IDIzMGw3OC45LTQzLjcgMTQuMi0xMjMuMXoiIC8+CiAgICA8cGF0aCBmaWxsPSIjQzMwMDJGIiBkPSJNMTI1IDMwdjIyLjItLjFWMjMwbDc4LjktNDMuNyAxNC4yLTEyMy4xTDEyNSAzMHoiIC8+CiAgICA8cGF0aCAgZmlsbD0iI0ZGRkZGRiIgZD0iTTEyNSA1Mi4xTDY2LjggMTgyLjZoMjEuN2wxMS43LTI5LjJoNDkuNGwxMS43IDI5LjJIMTgzTDEyNSA1Mi4xem0xNyA4My4zaC0zNGwxNy00MC45IDE3IDQwLjl6IiAvPgogIDwvc3ZnPg==">
-</div>
-<h2>Here are some links to help you start: </h2>
-<ul>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://angular.io/tutorial">Tour of Heroes</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://github.com/angular/angular-cli/wiki">CLI Documentation</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://blog.angular.io/">Angular blog</a></h2>
-  </li>
-</ul>
+<div fxFlex fxLayoutAlign="center center">
+  <mat-card fxFlex="90">
+    <mat-card-title>Request</mat-card-title>
+    <mat-card-subtitle>New request</mat-card-subtitle>
 
+    <mat-card-content>
+      <form [formGroup]="requestForm">
+        <div fxLayout="row" fxLayoutGap="25px">
+
+          <mat-form-field fxFlex="20">
+            <mat-select placeholder="Method" formControlName="method">
+              <mat-option *ngFor="let method of methods" [value]="method">
+                {{ method }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field fxFlex="60">
+            <input matInput
+                   placeholder="URL"
+                   type="url"
+                   name="url"
+                   formControlName="baseUrl">
+            <mat-icon matSuffix (click)="toggleForm()">
+              {{show ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}}
+            </mat-icon>
+          </mat-form-field>
+
+          <button fxFlex="20"
+                  mat-flat-button color="primary">Send</button>
+        </div>
+
+        <div *ngIf="show" formArrayName="urlParams">
+          <div *ngFor="let workout of requestForm.get('urlParams').controls;  let i=index; let isLast = last" [formGroupName]="i">
+
+            <div fxLayout="row" fxLayoutGap="25px" style="margin-left: calc(20% + 25px)">
+
+              <mat-form-field fxFlex="20">
+                <!-- TODO Позже вместо стиля добавить fxFlexOffset (Сейчас бага - issue github) -->
+                <input matInput placeholder="Name" type="text" formControlName="name" (input)="addInput(isLast, 'urlParams')">
+              </mat-form-field>
+
+              <mat-form-field fxFlex="40">
+                <input matInput placeholder="Value" type="text" formControlName="value" (input)="addInput(isLast, 'urlParams')">
+              </mat-form-field>
+
+              <button mat-icon-button (click)="removeInput(i, 'urlParams')">
+                <mat-icon>indeterminate_check_box</mat-icon>
+              </button>
+
+            </div>
+
+          </div>
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <mat-tab-group mat-stretch-tabs [selectedIndex]="2">
+          <mat-tab label="Headers" formArrayName="headerParams">
+
+            <div fxLayout="row"
+                 fxLayoutGap="25px"
+                 *ngFor="let header of requestForm.get('headerParams').controls; let i = index; let isLast = last"
+                 [formGroupName]="i">
+              <!-- TODO Позже вместо стиля добавить fxFlexOffset (Сейчас бага на issue github) -->
+
+              <mat-form-field fxFlex="25">
+                <input matInput placeholder="Name" type="text" name="name-{{i}}" formControlName="name" (input)="addInput(isLast, 'headerParams')">
+              </mat-form-field>
+
+              <mat-form-field fxFlex>
+                <input matInput placeholder="Value" type="text" name="value-{{i}}" formControlName="value" (input)="addInput(isLast, 'headerParams')">
+              </mat-form-field>
+
+              <button mat-icon-button (click)="removeInput(i, 'headerParams')">
+                <mat-icon>indeterminate_check_box</mat-icon>
+              </button>
+            </div>
+
+          </mat-tab>
+
+          <mat-tab label="Body">
+            <p> comming son...</p>
+          </mat-tab>
+
+          <mat-tab label="Json OUT">
+            <pre>{{ requestForm.value | json }}</pre>
+          </mat-tab>
+        </mat-tab-group>
+
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>
