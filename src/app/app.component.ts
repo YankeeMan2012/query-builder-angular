@@ -15,10 +15,7 @@ export class AppComponent  implements OnInit {
 
   public requestForm = new FormGroup({
     method: new FormControl(null),
-    baseUrl: new FormControl({
-      value: 'www.google.com.ua/api/v1/?q=angular&aqs=chrome',
-      disabled: false
-    }),
+    baseUrl: new FormControl('www.google.com.ua/api/v1/?q=angular&aqs=chrome'),
     urlParams: new FormArray([]),
     headerParams: new FormArray([
       new FormGroup({
@@ -37,7 +34,9 @@ export class AppComponent  implements OnInit {
 
   constructor() {}
 
-  public ngOnInit() {}
+  public ngOnInit() {
+    this.parseUrl();
+  }
 
   public get baseUrl(): AbstractControl {
     return this.requestForm.get('baseUrl');
@@ -68,10 +67,8 @@ export class AppComponent  implements OnInit {
     this.show = !this.show;
     if (this.show) {
       this.parseUrl(true);
-      this.baseUrl.disable();
     } else {
       this.buildUrl();
-      this.baseUrl.enable();
     }
   }
 
