@@ -20,6 +20,7 @@
                    placeholder="URL"
                    type="url"
                    name="url"
+                   (input)="parseUrl()"
                    formControlName="baseUrl">
             <mat-icon matSuffix (click)="toggleForm()">
               {{show ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}}

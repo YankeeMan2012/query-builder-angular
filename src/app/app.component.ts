@@ -16,7 +16,7 @@ export class AppComponent  implements OnInit {
   public requestForm = new FormGroup({
     method: new FormControl(null),
     baseUrl: new FormControl({
-      value: 'https://www.google.com.ua?q=angula&aqs=chrome',
+      value: 'www.google.com.ua/api/v1/?q=angular&aqs=chrome',
       disabled: false
     }),
     urlParams: new FormArray([]),
@@ -67,7 +67,7 @@ export class AppComponent  implements OnInit {
   public toggleForm() {
     this.show = !this.show;
     if (this.show) {
-      this.parseUrl();
+      this.parseUrl(true);
       this.baseUrl.disable();
     } else {
       this.buildUrl();
@@ -75,13 +75,17 @@ export class AppComponent  implements OnInit {
     }
   }
 
-  public parseUrl() {
-    const url: any = new window.URL(this.baseUrl.value);
-    this.baseUrl.setValue(url.origin);
-    url.searchParams.forEach((value, key) => {
+  public parseUrl(isOpen = false) {
+    const urlData = this.baseUrl.value.split('?');
+    if (isOpen) {
+      this.baseUrl.setValue(urlData[0].replace(/[/]+$/i, '') + '/');
+    }
+    this.removeAllParams(this.urlParams);
+    const searchParams: any = new URLSearchParams(urlData[1]);
+    searchParams.forEach((value, name) => {
       (<FormArray>this.urlParams).push(
         new FormGroup({
-          name: new FormControl(key),
+          name: new FormControl(name),
           value: new FormControl(value)
         })
       );
@@ -98,7 +102,6 @@ export class AppComponent  implements OnInit {
         // params = params.append(name, value); // TODO: Добавление для HttpParams.
         searchParams.append(name, value);
     });
-    this.removeAllParams(this.urlParams);
     const params = searchParams.toString();
     const url = `${this.baseUrl.value}${params && '?'}${params}`;
     this.baseUrl.setValue(url);
